@@ -1,0 +1,4 @@
+interface:
+  display_name: "微信公众号发布器"
+  short_description: "将本地文章上传到微信公众号草稿箱。"
+  default_prompt: "使用 $wechat-official-account-publisher 将这篇本地文章推送到微信公众号草稿箱。"

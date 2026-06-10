@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+
+# IDEs and editors
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Node.js
+node_modules/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example

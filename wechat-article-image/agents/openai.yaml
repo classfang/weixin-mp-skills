@@ -1,0 +1,4 @@
+interface:
+  display_name: "公众号配图生成"
+  short_description: "生成重图轻标题且标题融入画面的微信公众号高级配图。"
+  default_prompt: "为这篇公众号文章生成一张 2.35:1 宽幅配图，重图轻标题，并把标题自然融入画面。"
