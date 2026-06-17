@@ -1,0 +1,4 @@
+interface:
+  display_name: "公众号文章创作"
+  short_description: "创作公众号文章，匹配内容主题，并规划封面与文内配图prompt。"
+  default_prompt: "使用 $wechat-article-write 根据这个选题创作一篇公众号文章，并给出主题匹配和配图prompt。"

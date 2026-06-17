@@ -1,0 +1,4 @@
+interface:
+  display_name: "公众号文章发布"
+  short_description: "上传文章与封面素材到公众号后台，默认先创建草稿再确认发布。"
+  default_prompt: "使用 $wechat-article-publish 将这篇本地文章和封面图推送到微信公众号草稿箱。"

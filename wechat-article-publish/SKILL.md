@@ -1,11 +1,15 @@
 ---
-name: wechat-official-account-publisher
-description: 通过微信公众号官方服务端 API 将本地图文文章推送到公众号后台。当 Codex 需要上传本地 HTML、Markdown 或 JSON 文章，上传并改写本地文内图片，创建微信公众号草稿，在用户明确确认后提交草稿发布，或查询公众号文章发布状态时使用。
+name: wechat-article-publish
+description: 通过微信公众号官方服务端 API 将本地文章发布素材推送到公众号后台，默认创建草稿而不是直接发布。Use when Codex needs to upload WeChat Official Account HTML, Markdown, or JSON articles, upload and rewrite local in-article images, create draft articles, publish only after explicit confirmation, or query publication status.
 ---
 
-# 微信公众号发布器
+# 微信公众号文章发布
 
-使用微信公众号官方服务端 API，将本地文章素材移动到公众号后台。优先创建草稿；只有当用户在当前轮次明确要求发布时，才提交草稿发布。
+使用微信公众号官方服务端 API，将文章创作和文章配图节点产出的本地素材移动到公众号后台。默认创建草稿；只有当用户在当前轮次明确要求发布时，才提交草稿发布。
+
+## 定位
+
+发布节点只处理素材上传、草稿创建、发布确认和状态查询。不要在这个节点重写文章或生成图片；如果缺少正文或封面图，先提示用户使用 `$wechat-article-write` 或 `$wechat-article-image` 补齐。
 
 ## 工作流
 
