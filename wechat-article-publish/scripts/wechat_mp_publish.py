@@ -24,6 +24,28 @@ DEVELOPER_PLATFORM_URL = "https://developers.weixin.qq.com/platform"
 INLINE_IMAGE_LIMIT = 1024 * 1024
 DEFAULT_CREDENTIALS_FILE = Path.home() / ".config" / "wechat-mp" / ".env"
 IMG_SRC_RE = re.compile(r"(<img\b[^>]*?\bsrc\s*=\s*)([\"'])(.*?)(\2)", re.I | re.S)
+IMG_TAG_RE = re.compile(
+    r"<img\b[^>]*?\bsrc\s*=\s*(?P<quote>[\"'])(?P<src>.*?)(?P=quote)[^>]*>",
+    re.I | re.S,
+)
+IMAGE_ONLY_BLOCK_RE = re.compile(
+    r"<(?P<tag>p|div|section|figure)\b[^>]*>\s*"
+    r"(?P<img><img\b[^>]*?\bsrc\s*=\s*(?P<quote>[\"'])(?P<src>.*?)(?P=quote)[^>]*>)"
+    r"\s*</(?P=tag)>",
+    re.I | re.S,
+)
+LEADING_IMAGE_ONLY_BLOCK_RE = re.compile(
+    r"^\s*<(?P<tag>p|div|section|figure)\b[^>]*>\s*"
+    r"(?P<img><img\b[^>]*?\bsrc\s*=\s*(?P<quote>[\"'])(?P<src>.*?)(?P=quote)[^>]*>)"
+    r"\s*</(?P=tag)>\s*",
+    re.I | re.S,
+)
+LEADING_IMAGE_TAG_RE = re.compile(
+    r"^\s*<img\b[^>]*?\bsrc\s*=\s*(?P<quote>[\"'])(?P<src>.*?)(?P=quote)[^>]*>\s*",
+    re.I | re.S,
+)
+H1_RE = re.compile(r"<h1\b[^>]*>(?P<body>.*?)</h1>", re.I | re.S)
+EMPTY_BLOCK_RE = re.compile(r"<(?P<tag>p|div|section|figure)\b[^>]*>\s*</(?P=tag)>", re.I | re.S)
 PRE_BLOCK_RE = re.compile(r"<pre\b(?P<attrs>[^>]*)>(?P<body>.*?)</pre>", re.I | re.S)
 STYLE_ATTR_RE = re.compile(r"\bstyle\s*=\s*([\"'])(?P<style>.*?)\1", re.I | re.S)
 CODE_WRAPPER_RE = re.compile(r"^\s*<code\b[^>]*>(?P<body>.*?)</code>\s*$", re.I | re.S)
@@ -70,6 +92,10 @@ def print_json(value: Any) -> None:
 
 def strip_tags(value: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", value)).strip()
+
+
+def normalized_plain_text(value: str) -> str:
+    return re.sub(r"\s+", "", html.unescape(strip_tags(value))).casefold()
 
 
 def read_text(path: Path) -> str:
@@ -312,6 +338,91 @@ def resolve_image_path(src: str, base_dir: Path) -> Path | None:
     return candidate.resolve()
 
 
+def image_src_matches_path(src: str, base_dir: Path, target: Path | None) -> bool:
+    if target is None:
+        return False
+    try:
+        image_path = resolve_image_path(src, base_dir)
+    except WeChatError:
+        return False
+    return image_path == target if image_path is not None else False
+
+
+def strip_empty_blocks(content: str) -> str:
+    previous = None
+    while previous != content:
+        previous = content
+        content = EMPTY_BLOCK_RE.sub("", content)
+    return content
+
+
+def strip_leading_image(content: str) -> str:
+    for pattern in (LEADING_IMAGE_ONLY_BLOCK_RE, LEADING_IMAGE_TAG_RE):
+        cleaned = pattern.sub("", content, count=1)
+        if cleaned != content:
+            return strip_empty_blocks(cleaned).strip()
+
+    match = IMG_TAG_RE.search(content)
+    if match and not normalized_plain_text(content[: match.start()]):
+        content = content[: match.start()] + content[match.end() :]
+    return strip_empty_blocks(content).strip()
+
+
+def strip_cover_image_by_path(content: str, base_dir: Path, cover: str | None) -> tuple[str, bool]:
+    cover_path: Path | None = None
+    if cover:
+        candidate = Path(cover).expanduser()
+        cover_path = candidate.resolve() if candidate.is_absolute() else (base_dir / candidate).resolve()
+    removed = False
+
+    def replace_cover_block(match: re.Match[str]) -> str:
+        nonlocal removed
+        src = match.group("src")
+        if image_src_matches_path(src, base_dir, cover_path):
+            removed = True
+            return ""
+        return match.group(0)
+
+    def replace_cover_tag(match: re.Match[str]) -> str:
+        nonlocal removed
+        src = match.group("src")
+        if image_src_matches_path(src, base_dir, cover_path):
+            removed = True
+            return ""
+        return match.group(0)
+
+    if cover_path is not None:
+        content = IMAGE_ONLY_BLOCK_RE.sub(replace_cover_block, content)
+        content = IMG_TAG_RE.sub(replace_cover_tag, content)
+
+    return strip_empty_blocks(content).strip(), removed
+
+
+def strip_body_title(content: str, title: Any) -> str:
+    match = H1_RE.search(content)
+    if not match:
+        return content.strip()
+    title_key = normalized_plain_text(str(title)) if title else ""
+    heading_key = normalized_plain_text(match.group("body"))
+    text_before = normalized_plain_text(content[: match.start()])
+    if (title_key and heading_key == title_key) or not text_before:
+        content = content[: match.start()] + content[match.end() :]
+    return strip_empty_blocks(content).strip()
+
+
+def clean_publish_body(content: str, title: Any, base_dir: Path, cover: str | None) -> str:
+    """Remove elements that WeChat renders separately from the article body."""
+
+    content, removed_cover = strip_cover_image_by_path(content, base_dir, cover)
+    if not removed_cover:
+        content = strip_leading_image(content)
+    content = strip_body_title(content, title)
+    content, removed_cover_after_title = strip_cover_image_by_path(content, base_dir, cover)
+    if not removed_cover and not removed_cover_after_title:
+        content = strip_leading_image(content)
+    return content.strip()
+
+
 def check_inline_image(path: Path) -> None:
     require_file(path, "Inline image")
     mime = mimetypes.guess_type(path.name)[0]
@@ -484,6 +595,9 @@ def command_draft(args: argparse.Namespace) -> None:
     require_file(article_path, "Article")
     metadata, content = load_article(article_path)
     token = None if args.dry_run else get_access_token(args)
+    title = args.title or metadata.get("title")
+    cover = args.cover or metadata.get("cover_path") or metadata.get("cover")
+    content = clean_publish_body(content, title, article_path.parent, cover)
     content = rewrite_inline_images(
         content=content,
         base_dir=article_path.parent,
@@ -492,7 +606,6 @@ def command_draft(args: argparse.Namespace) -> None:
         upload=not args.no_inline_image_upload,
     )
     thumb_media_id = args.thumb_media_id or metadata.get("thumb_media_id")
-    cover = args.cover or metadata.get("cover_path") or metadata.get("cover")
     if not thumb_media_id:
         if args.dry_run:
             thumb_media_id = "DRY_RUN_THUMB_MEDIA_ID"

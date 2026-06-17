@@ -19,24 +19,57 @@
 - 将本地 HTML、Markdown 或 JSON 文章推送到公众号后台草稿箱。
 - 将公众号发布流程中的注意事项、凭据读取方式、图片限制和错误处理交给 Codex 统一执行。
 
-## ⚙️ 安装到 Codex
+## ⚙️ 安装和更新到 Codex
 
 ### 📥 1. 克隆仓库
 
 ```bash
-git clone https://github.com/<your-org-or-user>/weixin-mp-skills.git
+git clone https://github.com/classfang/weixin-mp-skills.git
 cd weixin-mp-skills
 ```
 
 如果你是直接下载压缩包，解压后进入仓库根目录即可。
 
-### 📁 2. 创建本地技能目录
+### 🔄 2. 一键安装或更新
+
+```bash
+./scripts/update-skills.sh
+```
+
+脚本会自动拉取当前仓库的最新提交，并把所有包含 `SKILL.md` 的顶层技能目录同步到：
+
+```text
+~/.codex/skills
+```
+
+常用选项：
+
+```bash
+# 只预览将要同步的内容
+./scripts/update-skills.sh --dry-run
+
+# 从当前工作区内容同步，不执行 git pull
+./scripts/update-skills.sh --no-pull
+
+# 指定 Codex skills 目录
+./scripts/update-skills.sh --dest ~/.codex/skills
+```
+
+如果还没有克隆仓库，也可以直接用脚本克隆到本地缓存并安装：
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/classfang/weixin-mp-skills/main/scripts/update-skills.sh)
+```
+
+如果是下载的压缩包，脚本会跳过 `git pull`，直接把当前解压目录里的技能同步过去。
+
+### 📁 3. 手动安装（备选）
 
 ```bash
 mkdir -p ~/.codex/skills
 ```
 
-### 📦 3. 拷贝技能目录
+然后拷贝技能目录：
 
 ```bash
 cp -R wechat-article-write ~/.codex/skills/
@@ -50,7 +83,7 @@ cp -R wechat-article-publish ~/.codex/skills/
 cp -R wechat-article-write wechat-article-image wechat-article-publish ~/.codex/skills/
 ```
 
-### 🔄 4. 重启或刷新 Codex
+### 🔁 4. 重启或刷新 Codex
 
 重新打开 Codex，或开启一个新的 Codex 会话。之后可以在任务里直接写技能名，例如：
 
