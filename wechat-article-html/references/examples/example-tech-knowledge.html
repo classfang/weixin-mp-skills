@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude API 完全指南：从基础调用到生产实践</title>
+</head>
+<body style="margin:0;padding:0;background:#f6f8fb;color:#1f2937;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',Arial,sans-serif;line-height:1.85;">
+  <section style="box-sizing:border-box;max-width:680px;margin:0 auto;padding:24px 16px 48px;background:#ffffff;">
+
+    <img src="https://placeholder.com/800x400" alt="Claude API 架构图" style="display:block;width:100%;max-width:100%;height:auto;margin:0 0 28px;border-radius:8px;">
+
+    <h1 style="margin:0 0 14px;font-size:26px;line-height:1.35;font-weight:800;color:#111827;letter-spacing:0;text-align:left;word-break:break-word;">Claude API 完全指南：从基础调用到生产实践</h1>
+    <p style="margin:0 0 22px;font-size:16px;color:#4b5563;word-break:break-word;">本文将深入探讨 Claude API 的核心概念、最佳实践和生产环境部署策略，帮助开发者构建高质量的 AI 应用。</p>
+
+    <section style="margin:26px 0;padding:18px 18px;border-left:4px solid #0ea5e9;background:#f0f9ff;border-radius:6px;">
+      <p style="margin:0 0 10px;font-size:16px;color:#334155;">Claude API 提供了业界领先的 AI 能力，支持复杂的推理、代码生成和长文本处理。</p>
+      <p style="margin:0;font-size:16px;color:#0f172a;font-weight:700;">掌握正确的调用方式和优化技巧，可以显著提升应用性能并降低成本。</p>
+    </section>
+
+    <section style="margin:34px 0 18px;">
+      <p style="margin:0 0 8px;font-size:14px;color:#0ea5e9;font-weight:800;letter-spacing:0;">01</p>
+      <h2 style="margin:0 0 18px;font-size:22px;line-height:1.45;font-weight:800;color:#111827;">API 基础配置</h2>
+    </section>
+
+    <p style="margin:0 0 16px;font-size:16px;color:#374151;">首先需要在 Anthropic Console 创建 API Key，然后安装官方 SDK。Claude API 支持多种编程语言，包括 Python、TypeScript、Go 等。</p>
+
+    <p style="display:block;box-sizing:border-box;max-width:100%;margin:16px 0 22px;padding:16px;background:#0f172a;color:#dbeafe;border-radius:8px;word-break:break-all;overflow-wrap:anywhere;font-size:14px;line-height:1.75;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;">pip&nbsp;install&nbsp;anthropic<br><br>from&nbsp;anthropic&nbsp;import&nbsp;Anthropic<br><br>client&nbsp;=&nbsp;Anthropic(<br>&nbsp;&nbsp;&nbsp;&nbsp;api_key="your-api-key"<br>)</p>
+
+    <section style="margin:24px 0 32px;padding:18px;background:#111827;border-radius:8px;color:#f9fafb;">
+      <p style="margin:0 0 12px;font-size:16px;font-weight:700;color:#ffffff;">核心参数说明</p>
+      <p style="margin:0 0 8px;font-size:16px;color:#e5e7eb;">• model: 选择 claude-opus-4-8、claude-sonnet-4-6 或 claude-haiku-4-5</p>
+      <p style="margin:0;font-size:16px;color:#e5e7eb;">• max_tokens: 控制输出长度，最大 16384 tokens</p>
+    </section>
+
+    <section style="margin:34px 0 18px;">
+      <p style="margin:0 0 8px;font-size:14px;color:#0ea5e9;font-weight:800;letter-spacing:0;">02</p>
+      <h2 style="margin:0 0 18px;font-size:22px;line-height:1.45;font-weight:800;color:#111827;">流式响应与错误处理</h2>
+    </section>
+
+    <p style="margin:0 0 16px;font-size:16px;color:#374151;">生产环境中建议使用流式响应（streaming），这样可以更快地向用户展示结果，提升交互体验。</p>
+
+    <section style="margin:18px 0 24px;padding:18px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;">
+      <p style="margin:0 0 10px;font-size:15px;line-height:1.8;color:#374151;">• 实现指数退避重试机制，处理 429 和 500 错误</p>
+      <p style="margin:0 0 10px;font-size:15px;line-height:1.8;color:#374151;">• 使用 timeout 参数避免长时间挂起</p>
+      <p style="margin:0;font-size:15px;line-height:1.8;color:#374151;">• 监控 API 使用量和响应延迟</p>
+    </section>
+
+    <img src="https://placeholder.com/800x450" alt="API 调用流程图" style="display:block;width:100%;max-width:100%;height:auto;margin:8px 0 10px;border-radius:8px;">
+    <p style="margin:0 0 22px;font-size:13px;line-height:1.7;color:#6b7280;text-align:center;">完整的 API 调用与错误处理流程</p>
+
+    <section style="margin:34px 0 18px;">
+      <p style="margin:0 0 8px;font-size:14px;color:#0ea5e9;font-weight:800;letter-spacing:0;">03</p>
+      <h2 style="margin:0 0 18px;font-size:22px;line-height:1.45;font-weight:800;color:#111827;">提示词缓存优化</h2>
+    </section>
+
+    <p style="margin:0 0 16px;font-size:16px;color:#374151;">Prompt Caching 是降低成本的关键特性。对于重复使用的系统提示词或长文本上下文，启用缓存可以节省 90% 的输入 token 成本。</p>
+
+    <section style="margin:18px 0 22px;padding:18px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;">
+      <p style="margin:0 0 8px;font-size:15px;color:#374151;">缓存有效期为 5 分钟，适合高频调用场景</p>
+    </section>
+
+    <p style="display:block;box-sizing:border-box;max-width:100%;margin:16px 0 22px;padding:16px;background:#0f172a;color:#dbeafe;border-radius:8px;word-break:break-all;overflow-wrap:anywhere;font-size:14px;line-height:1.75;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;">response&nbsp;=&nbsp;client.messages.create(<br>&nbsp;&nbsp;&nbsp;&nbsp;model="claude-sonnet-4-6",<br>&nbsp;&nbsp;&nbsp;&nbsp;system=[<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"type":&nbsp;"text",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"text":&nbsp;"You&nbsp;are&nbsp;a&nbsp;helpful&nbsp;assistant",<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"cache_control":&nbsp;{"type":&nbsp;"ephemeral"}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>&nbsp;&nbsp;&nbsp;&nbsp;],<br>&nbsp;&nbsp;&nbsp;&nbsp;messages=[...]<br>)</p>
+
+    <section style="margin:18px 0 24px;padding:14px 16px;background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;">
+      <p style="margin:0 0 6px;font-size:13px;color:#0ea5e9;font-weight:800;">参考文章</p>
+      <p style="margin:0 0 8px;font-size:15px;line-height:1.7;color:#111827;font-weight:700;">Anthropic Prompt Caching 官方文档</p>
+      <p style="margin:0;font-size:13px;line-height:1.65;color:#2563eb;word-break:break-all;">https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching</p>
+    </section>
+
+  </section>
+</body>
+</html>
