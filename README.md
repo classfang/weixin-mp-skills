@@ -1,6 +1,6 @@
 # 📮 微信公众号运维 Skills
 
-这是一个面向微信公众号内容生产和运维的 Codex Skill 合集。它把常见的公众号工作流沉淀成三个可复用节点：文章创作、文章配图、文章发布。
+这是一个面向微信公众号内容生产和运维的 Codex Skill 合集。它把常见的公众号工作流沉淀成一个端到端编排技能，以及三个可独立复用的节点：文章创作、文章配图、文章发布。
 
 推荐优先在 Codex 中使用这些技能。Codex 会读取每个技能目录中的 `SKILL.md` 元数据，并在任务匹配时自动选择合适的技能；你也可以在提示词里显式使用 `$技能名` 调用。
 
@@ -8,12 +8,14 @@
 
 | 技能 | 用途 |
 | --- | --- |
+| `$wechat-article-workflow` | 全流程编排节点。通过问答补齐必要信息，串联文章创作、配图、草稿创建和正式发布确认。 |
 | `$wechat-article-write` | 文章创作节点。负责选题理解、标题大纲、正文写作、视觉风格匹配、封面图和文内配图 prompt；需要时可输出公众号可粘贴 HTML。 |
 | `$wechat-article-image` | 文章配图节点。负责微信公众号封面图、头图和文内配图，默认偏好 2.35:1 宽幅封面和“重图轻标题”的知识媒体风格。 |
 | `$wechat-article-publish` | 文章发布节点。通过微信公众号官方服务端 API 上传本地图文素材，默认创建公众号草稿，并在明确确认后提交发布或查询发布状态。 |
 
 ## 🧭 适合的工作流
 
+- 从选题、草稿或大纲开始，通过问答串联创作、配图、草稿和发布确认。
 - 从选题、草稿或大纲创作一篇公众号文章，并给出视觉风格与配图 prompt。
 - 为文章生成封面图、头图或文内配图。
 - 将本地 HTML、Markdown 或 JSON 文章推送到公众号后台草稿箱。
@@ -75,17 +77,22 @@ mkdir -p ~/.codex/skills
 cp -R wechat-article-write ~/.codex/skills/
 cp -R wechat-article-image ~/.codex/skills/
 cp -R wechat-article-publish ~/.codex/skills/
+cp -R wechat-article-workflow ~/.codex/skills/
 ```
 
 也可以一次性拷贝：
 
 ```bash
-cp -R wechat-article-write wechat-article-image wechat-article-publish ~/.codex/skills/
+cp -R wechat-article-workflow wechat-article-write wechat-article-image wechat-article-publish ~/.codex/skills/
 ```
 
 ### 🔁 4. 重启或刷新 Codex
 
 重新打开 Codex，或开启一个新的 Codex 会话。之后可以在任务里直接写技能名，例如：
+
+```text
+使用 $wechat-article-workflow 从这个选题开始，帮我完成公众号文章写作、配图和创建草稿。
+```
 
 ```text
 使用 $wechat-article-write 根据这个选题创作一篇公众号文章，并给出视觉风格建议和配图 prompt。
@@ -102,6 +109,16 @@ cp -R wechat-article-write wechat-article-image wechat-article-publish ~/.codex/
 如果你的 Codex 版本没有在 `~/.codex/skills` 中识别到这些技能，请检查 Codex 的技能列表或当前版本文档；部分版本也支持 open agent skills 标准目录，例如 `~/.agents/skills`。
 
 ## 💡 使用建议
+
+### 🧭 全流程编排
+
+如果不想分别调用三个节点，直接使用全流程技能：
+
+```text
+使用 $wechat-article-workflow 帮我从选题开始做一篇公众号文章，过程中需要我选择的地方你来问我，最后创建公众号草稿。
+```
+
+技能会用少量问答补齐读者、方向、视觉风格、是否生成文内图、是否创建草稿等关键选择。默认推进到公众号草稿；正式发布必须等你明确确认。
 
 ### 📝 文章创作
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "公众号全流程"
+  short_description: "通过问答串联公众号文章写作、封面配图、草稿创建与正式发布确认流程"
+  default_prompt: "Use $wechat-article-workflow 帮我从选题开始串联公众号写作、配图和草稿创建流程。"
