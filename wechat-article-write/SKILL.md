@@ -108,15 +108,27 @@ outputs/wechat-article.html
 
 ## 主题参考
 
-- `references/themes/index.md`：视觉风格选择指南。
-- `references/themes/theme-cool-blueprint.md`：冷感蓝图，清爽、理性、现代、冷色强调。
-- `references/themes/theme-minimal-ink.md`：极简墨色，克制、安静、文学感、高可读性。
-- `references/themes/theme-warm-order.md`：暖白秩序，平静、可信、稳重、暖色点缀。
-- `references/themes/theme-green-editorial.md`：森绿编辑，清新、有组织、编辑部质感。
-- `references/themes/theme-vintage-magazine.md`：复古杂志，纸媒感、叙事感、强标题。
-- `references/themes/theme-bluegray-brief.md`：蓝灰简报，冷静、紧凑、摘要感、信息密度高。
-- `references/themes/theme-noir-stage.md`：黑金舞台，深色、高对比、仪式感、力量感。
-- `references/themes/theme-notebook-sticky.md`：手账便签，亲近、轻松、温和、可执行。
+- `references/themes/index.md`：视觉风格选择指南，包含 40 个主题的完整索引。
+
+### 基础风格（8 个）
+
+- `theme-cool-blueprint.md`：冷感蓝图，清爽、理性、现代、冷色强调。
+- `theme-minimal-ink.md`：极简墨色，克制、安静、文学感、高可读性。
+- `theme-warm-order.md`：暖白秩序，平静、可信、稳重、暖色点缀。
+- `theme-green-editorial.md`：森绿编辑，清新、有组织、编辑部质感。
+- `theme-vintage-magazine.md`：复古杂志，纸媒感、叙事感、强标题。
+- `theme-bluegray-brief.md`：蓝灰简报，冷静、紧凑、摘要感、信息密度高。
+- `theme-noir-stage.md`：黑金舞台，深色、高对比、仪式感、力量感。
+- `theme-notebook-sticky.md`：手账便签，亲近、轻松、温和、可执行。
+
+### 扩展风格（2 个）
+
+- `theme-cyan-grid.md`：青格笔记，网格纸背景、适合备考复盘清单。
+- `theme-native-blueprint.md`：原生蓝图，适合 AI-Native 技术长文。
+
+### M2W 系列（30 个，来自 markdown2wechat）
+
+提供丰富的色彩、装饰和情绪选择，从极客暗黑（极客黑、Obsidian）、清新色彩（萌绿、萌粉、柠檬黄、草原绿）、专业技术（科技蓝、全栈蓝、前端之巅同款）到个性风格（Pornhub黄、重影、奇点）应有尽有。完整列表见 `references/themes/index.md`。
 
 主题文件定义颜色、排版、间距和可复用 HTML 片段。根据文章调整片段，而不是机械复制每个组件。
 

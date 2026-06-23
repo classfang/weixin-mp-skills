@@ -4,6 +4,8 @@
 
 ## 风格列表
 
+### 基础风格（8 个）
+
 | 风格 | 文件 | HTML 用例 | 视觉性格 | 版式特征 |
 | --- | --- | --- | --- | --- |
 | 冷感蓝图 | `theme-cool-blueprint.md` | `examples/cool-blueprint.html` | 清爽、理性、现代、冷色强调 | 蓝色编号、深色重点块、轻量边框卡片 |
@@ -14,6 +16,48 @@
 | 蓝灰简报 | `theme-bluegray-brief.md` | `examples/bluegray-brief.html` | 冷静、紧凑、摘要感、信息密度高 | 页眉标签、关键数字、分隔式条目 |
 | 黑金舞台 | `theme-noir-stage.md` | `examples/noir-stage.html` | 深色、高对比、仪式感、力量感 | 金色高光、暗色面板、舞台式重点块 |
 | 手账便签 | `theme-notebook-sticky.md` | `examples/notebook-sticky.html` | 亲近、轻松、温和、可执行 | 虚线边框、便签高亮、勾选清单 |
+
+### 扩展风格（2 个）
+
+| 风格 | 文件 | HTML 用例 | 视觉性格 | 版式特征 |
+| --- | --- | --- | --- | --- |
+| 青格笔记 | `theme-cyan-grid.md` | `examples/cyan-grid.html` | 备考、复盘、清单、笔记感 | 网格纸背景、青色标题、紧凑正文 |
+| 原生蓝图 | `theme-native-blueprint.md` | `examples/native-blueprint.html` | AI-Native、技术战略、长篇分析 | 黑白基底、浅蓝荧光标题、深色代码 |
+
+### M2W 系列风格（30 个，来自 markdown2wechat）
+
+| 风格 | 文件 | HTML 用例 | 视觉性格 |
+| --- | --- | --- | --- |
+| 姹紫 | `theme-m2w-brilliant-purple.md` | `examples/m2w-brilliant-purple.html` | 紫色主调、柔和层级、编辑感 |
+| 丘比特忙 | `theme-m2w-cupid-busy.md` | `examples/m2w-cupid-busy.html` | 粉红甜感、活泼装饰、轻松叙事 |
+| 重影 | `theme-m2w-double-shadow.md` | `examples/m2w-double-shadow.html` | 重影效果、层叠标题、视觉记忆点 |
+| 前端之巅同款 | `theme-m2w-frontend-peak.md` | `examples/m2w-frontend-peak.html` | 前端社区感、蓝紫强调、技术媒体气质 |
+| 全栈蓝 | `theme-m2w-fullstack-blue.md` | `examples/m2w-fullstack-blue.html` | 技术蓝、网格纸背景、工程笔记感 |
+| 极客黑 | `theme-m2w-geek-black.md` | `examples/m2w-geek-black.html` | 极客暗黑、强代码感、高对比阅读 |
+| 绿意 | `theme-m2w-greenery.md` | `examples/m2w-greenery.html` | 绿色生长感、清爽组织、轻松阅读 |
+| 柠檬黄 | `theme-m2w-lemon-yellow.md` | `examples/m2w-lemon-yellow.html` | 柠檬黄强调、明快轻松、高辨识度 |
+| 蓝莹 | `theme-m2w-luminous-blue.md` | `examples/m2w-luminous-blue.html` | 莹蓝色、清亮科技感、轻量边框 |
+| 极简黑 | `theme-m2w-minimal-black.md` | `examples/m2w-minimal-black.html` | 黑白极简、冷静克制、文字优先 |
+| 凝夜紫 | `theme-m2w-night-purple.md` | `examples/m2w-night-purple.html` | 夜色紫调、克制神秘、深浅对比 |
+| Obsidian | `theme-m2w-obsidian.md` | `examples/m2w-obsidian.html` | 暗色笔记、低照度阅读、紫色强调 |
+| 橙蓝风 | `theme-m2w-orange-blue.md` | `examples/m2w-orange-blue.html` | 橙蓝撞色、活跃节奏、信息分组 |
+| 橙心 | `theme-m2w-orange-heart.md` | `examples/m2w-orange-heart.html` | 橙色核心、温暖提示、清楚推进 |
+| 兰青 | `theme-m2w-orchid-cyan.md` | `examples/m2w-orchid-cyan.html` | 兰青配色、清新理性、柔和边框 |
+| Pornhub黄 | `theme-m2w-pornhub-yellow.md` | `examples/m2w-pornhub-yellow.html` | 黑黄高对比、强品牌感、醒目节奏 |
+| 草原绿 | `theme-m2w-prairie-green.md` | `examples/m2w-prairie-green.html` | 草原绿、自然明亮、柔和重点 |
+| 蔷薇紫 | `theme-m2w-rose-purple.md` | `examples/m2w-rose-purple.html` | 蔷薇紫、温柔醒目、轻杂志感 |
+| 红绯 | `theme-m2w-scarlet.md` | `examples/m2w-scarlet.html` | 红绯强调、温热情绪、醒目标题 |
+| 简 | `theme-m2w-simple.md` | `examples/m2w-simple.html` | 简洁白底、轻装饰、稳定正文 |
+| 奇点 | `theme-m2w-singularity.md` | `examples/m2w-singularity.html` | 科技感、几何强调、未来感视觉 |
+| 锤子便签主题第2版 | `theme-m2w-smartisan-note-v2.md` | `examples/m2w-smartisan-note-v2.html` | 便签纸感、轻复古、记录氛围 |
+| 萌绿 | `theme-m2w-soft-green.md` | `examples/m2w-soft-green.html` | 萌绿色、清新温和、友好提示 |
+| 萌粉 | `theme-m2w-soft-pink.md` | `examples/m2w-soft-pink.html` | 萌粉色、柔软轻松、亲近语气 |
+| 科技蓝 | `theme-m2w-tech-blue.md` | `examples/m2w-tech-blue.html` | 科技蓝、冷静理性、强信息层级 |
+| 嫩青 | `theme-m2w-tender-cyan.md` | `examples/m2w-tender-cyan.html` | 嫩青色、轻盈背景、清爽阅读 |
+| 灵动蓝 | `theme-m2w-vivid-blue.md` | `examples/m2w-vivid-blue.html` | 灵动蓝色、轻快段落、清楚标题 |
+| WeFormat | `theme-m2w-weformat.md` | `examples/m2w-weformat.html` | 干净通用、排版稳定、默认风格 |
+| 山吹 | `theme-m2w-yamabuki.md` | `examples/m2w-yamabuki.html` | 山吹黄色、温暖纸面、醒目重点 |
+| 雁栖湖 | `theme-m2w-yanqi-lake.md` | `examples/m2w-yanqi-lake.html` | 湖蓝青绿、清爽安静、自然科技感 |
 
 ## 风格选择规则
 
