@@ -1,6 +1,6 @@
 # 📮 微信公众号运维 Skills
 
-这是一个面向微信公众号内容生产和运维的 Codex Skill 合集。它把常见的公众号工作流沉淀成一个端到端编排技能，以及三个可独立复用的节点：文章创作、文章配图、文章发布。
+这是一个面向微信公众号内容生产和运维的 Codex Skill 合集。它把常见的公众号工作流沉淀成一个端到端编排技能，以及多个可独立复用的节点：文章创作、文章配图、文章发布、留言管理和数据报表。
 
 推荐优先在 Codex 中使用这些技能。Codex 会读取每个技能目录中的 `SKILL.md` 元数据，并在任务匹配时自动选择合适的技能；你也可以在提示词里显式使用 `$技能名` 调用。
 
@@ -12,6 +12,8 @@
 | `$wechat-article-write` | 文章创作节点。负责选题理解、标题大纲、正文写作、视觉风格匹配、封面图和文内配图 prompt；需要时可把已生成图片回填到公众号 HTML。 |
 | `$wechat-article-image` | 文章配图节点。负责微信公众号封面图、头图和文内配图，默认偏好 2.35:1 宽幅封面和“重图轻标题”的知识媒体风格。 |
 | `$wechat-article-publish` | 文章发布节点。通过微信公众号官方服务端 API 上传本地图文素材，默认创建公众号草稿，并在明确确认后提交发布或查询发布状态。 |
+| `$wechat-article-comments` | 留言管理节点。拉取文章留言，生成精选/回复建议，并在明确确认后执行精选、回复、删除、打开或关闭评论。 |
+| `$wechat-data-report` | 数据报表节点。拉取用户、图文、发表内容、消息和接口统计数据，生成 JSON 数据导出和 Markdown 运营复盘。 |
 
 ## 🧭 适合的工作流
 
@@ -19,6 +21,8 @@
 - 从选题、草稿或大纲创作一篇公众号文章，并给出视觉风格与配图 prompt。
 - 为文章生成封面图、头图或文内配图。
 - 将本地 HTML、Markdown 或 JSON 文章推送到公众号后台草稿箱。
+- 拉取已发布文章留言，整理精选建议、回复草稿和风险处理清单。
+- 拉取公众号数据统计接口，生成日报、周报、月报或文章表现复盘。
 - 将公众号发布流程中的注意事项、凭据读取方式、图片限制和错误处理交给 Codex 统一执行。
 
 ## ⚙️ 安装和更新到 Codex
@@ -78,12 +82,14 @@ cp -R wechat-article-write ~/.codex/skills/
 cp -R wechat-article-image ~/.codex/skills/
 cp -R wechat-article-publish ~/.codex/skills/
 cp -R wechat-article-workflow ~/.codex/skills/
+cp -R wechat-article-comments ~/.codex/skills/
+cp -R wechat-data-report ~/.codex/skills/
 ```
 
 也可以一次性拷贝：
 
 ```bash
-cp -R wechat-article-workflow wechat-article-write wechat-article-image wechat-article-publish ~/.codex/skills/
+cp -R wechat-article-workflow wechat-article-write wechat-article-image wechat-article-publish wechat-article-comments wechat-data-report ~/.codex/skills/
 ```
 
 ### 🔁 4. 重启或刷新 Codex
@@ -104,6 +110,14 @@ cp -R wechat-article-workflow wechat-article-write wechat-article-image wechat-a
 
 ```text
 使用 $wechat-article-publish 将 ./outputs/article.html 创建为公众号草稿。
+```
+
+```text
+使用 $wechat-article-comments 拉取这篇文章的留言，生成精选和回复建议。
+```
+
+```text
+使用 $wechat-data-report 拉取公众号近 7 天数据，并生成一份运营复盘。
 ```
 
 如果你的 Codex 版本没有在 `~/.codex/skills` 中识别到这些技能，请检查 Codex 的技能列表或当前版本文档；部分版本也支持 open agent skills 标准目录，例如 `~/.agents/skills`。
@@ -160,6 +174,26 @@ cp -R wechat-article-workflow wechat-article-write wechat-article-image wechat-a
 WECHAT_APP_ID=your_app_id
 WECHAT_APP_SECRET=your_app_secret
 ```
+
+### 💬 留言管理
+
+留言相关技能默认先拉取和分析，不会擅自改变线上留言状态：
+
+```text
+使用 $wechat-article-comments 拉取 msg_data_id=123456、index=0 的全部留言，给我精选建议和回复草稿。
+```
+
+精选、回复、删除、打开/关闭评论等动作必须先 dry-run，并在你明确确认后才会执行。
+
+### 📊 数据报表
+
+数据报表技能会调用微信公众号官方数据统计接口，并默认输出原始 JSON 和 Markdown 复盘：
+
+```text
+使用 $wechat-data-report 拉取 2026-06-16 到 2026-06-22 的用户和内容数据，生成周报。
+```
+
+官方建议每天上午 8 点后查询前一天数据；如果你要求查询今天的数据，技能会提示数据可能尚未完整生成。
 
 ## 🤝 贡献
 

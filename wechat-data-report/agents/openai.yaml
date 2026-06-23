@@ -1,0 +1,4 @@
+interface:
+  display_name: "公众号数据报表"
+  short_description: "拉取官方数据统计接口并生成公众号运营复盘和分析报表。"
+  default_prompt: "使用 $wechat-data-report 拉取公众号近 7 天数据，并生成一份运营复盘。"
