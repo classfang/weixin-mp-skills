@@ -108,9 +108,9 @@ outputs/wechat-article.html
 
 ## 主题参考
 
-- `references/themes/index.md`：视觉风格选择指南，包含 40 个主题的完整索引。
+- `references/themes/index.md`：视觉风格选择指南，包含 41 个主题的完整索引。
 
-### 基础风格（8 个）
+### 基础风格（9 个）
 
 - `theme-cool-blueprint.md`：冷感蓝图，清爽、理性、现代、冷色强调。
 - `theme-minimal-ink.md`：极简墨色，克制、安静、文学感、高可读性。
@@ -118,6 +118,7 @@ outputs/wechat-article.html
 - `theme-green-editorial.md`：森绿编辑，清新、有组织、编辑部质感。
 - `theme-vintage-magazine.md`：复古杂志，纸媒感、叙事感、强标题。
 - `theme-bluegray-brief.md`：蓝灰简报，冷静、紧凑、摘要感、信息密度高。
+- `theme-orange-column.md`：橙点专栏，原文同款、白底、橙红章节、技术媒体长文。
 - `theme-noir-stage.md`：黑金舞台，深色、高对比、仪式感、力量感。
 - `theme-notebook-sticky.md`：手账便签，亲近、轻松、温和、可执行。
 
