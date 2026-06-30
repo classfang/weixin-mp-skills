@@ -49,6 +49,10 @@ EMPTY_BLOCK_RE = re.compile(r"<(?P<tag>p|div|section|figure)\b[^>]*>\s*</(?P=tag
 PRE_BLOCK_RE = re.compile(r"<pre\b(?P<attrs>[^>]*)>(?P<body>.*?)</pre>", re.I | re.S)
 STYLE_ATTR_RE = re.compile(r"\bstyle\s*=\s*([\"'])(?P<style>.*?)\1", re.I | re.S)
 CODE_WRAPPER_RE = re.compile(r"^\s*<code\b[^>]*>(?P<body>.*?)</code>\s*$", re.I | re.S)
+LIST_BLOCK_RE = re.compile(
+    r"<(?P<tag>ol|ul)\b(?P<attrs>[^>]*)>(?P<body>.*?)</(?P=tag)>",
+    re.I | re.S,
+)
 DEFAULT_CODE_STYLE = (
     "display:block;box-sizing:border-box;max-width:100%;"
     "margin:16px 0 22px;padding:16px;background:#0f172a;color:#dbeafe;"
@@ -146,6 +150,8 @@ def parse_frontmatter(text: str) -> tuple[dict[str, str], str]:
 def simple_markdown_to_html(text: str) -> str:
     blocks: list[str] = []
     paragraph: list[str] = []
+    list_type: str | None = None
+    list_items: list[str] = []
     in_code = False
     code_lines: list[str] = []
 
@@ -154,6 +160,24 @@ def simple_markdown_to_html(text: str) -> str:
         if paragraph:
             blocks.append(f"<p>{html.escape(' '.join(paragraph))}</p>")
             paragraph = []
+
+    def flush_list() -> None:
+        nonlocal list_type, list_items
+        if not list_type:
+            return
+        tag = "ol" if list_type == "ol" else "ul"
+        items = "".join(f"<li>{html.escape(item)}</li>" for item in list_items)
+        blocks.append(f"<{tag}>{items}</{tag}>")
+        list_type = None
+        list_items = []
+
+    def add_list_item(kind: str, value: str) -> None:
+        nonlocal list_type
+        flush_paragraph()
+        if list_type and list_type != kind:
+            flush_list()
+        list_type = kind
+        list_items.append(value)
 
     for line in text.splitlines():
         stripped = line.strip()
@@ -164,6 +188,7 @@ def simple_markdown_to_html(text: str) -> str:
                 in_code = False
             else:
                 flush_paragraph()
+                flush_list()
                 in_code = True
             continue
         if in_code:
@@ -171,24 +196,38 @@ def simple_markdown_to_html(text: str) -> str:
             continue
         if not stripped:
             flush_paragraph()
+            flush_list()
             continue
         image_match = re.match(r"!\[(.*?)\]\((.*?)\)", stripped)
         if image_match:
             flush_paragraph()
+            flush_list()
             alt, src = image_match.groups()
             blocks.append(f'<p><img src="{html.escape(src, quote=True)}" alt="{html.escape(alt, quote=True)}"></p>')
             continue
         heading_match = re.match(r"^(#{1,6})\s+(.+)$", stripped)
         if heading_match:
             flush_paragraph()
+            flush_list()
             level = len(heading_match.group(1))
             blocks.append(f"<h{level}>{html.escape(heading_match.group(2))}</h{level}>")
             continue
+        unordered_match = re.match(r"^[-*+]\s+(.+)$", stripped)
+        if unordered_match:
+            add_list_item("ul", unordered_match.group(1))
+            continue
+        ordered_match = re.match(r"^\d+[.)]\s+(.+)$", stripped)
+        if ordered_match:
+            add_list_item("ol", ordered_match.group(1))
+            continue
+        if list_type:
+            flush_list()
         paragraph.append(stripped)
 
     if in_code:
         blocks.append(wechat_code_block_from_text(chr(10).join(code_lines)))
     flush_paragraph()
+    flush_list()
     return "\n".join(blocks)
 
 
@@ -254,6 +293,27 @@ def normalize_wechat_code_blocks(content: str) -> str:
     return PRE_BLOCK_RE.sub(replace, content)
 
 
+def normalize_wechat_lists(content: str) -> str:
+    """Remove whitespace-only nodes inside lists for WeChat editor stability."""
+
+    def replace(match: re.Match[str]) -> str:
+        body = match.group("body").strip()
+        body = re.sub(r">\s+(?=</?li\b|</?(?:ol|ul)\b)", ">", body, flags=re.I)
+        return f"<{match.group('tag')}{match.group('attrs')}>{body}</{match.group('tag')}>"
+
+    previous = None
+    while previous != content:
+        previous = content
+        content = LIST_BLOCK_RE.sub(replace, content)
+    return content
+
+
+def normalize_wechat_content(content: str) -> str:
+    """Normalize HTML constructs that are fragile in WeChat rich text."""
+
+    return normalize_wechat_lists(normalize_wechat_code_blocks(content))
+
+
 def markdown_to_html(text: str) -> str:
     try:
         import markdown as markdown_lib  # type: ignore
@@ -290,7 +350,7 @@ def load_article(path: Path) -> tuple[dict[str, Any], str]:
         content = article.get("content") or article.get("html")
         if not content:
             raise WeChatError("JSON article must contain 'content' or 'html'.")
-        return dict(article), normalize_wechat_code_blocks(str(content))
+        return dict(article), normalize_wechat_content(str(content))
 
     text = read_text(path)
     if suffix in {".html", ".htm"}:
@@ -299,7 +359,7 @@ def load_article(path: Path) -> tuple[dict[str, Any], str]:
         found_title = title_from_html(text)
         if found_title:
             meta["title"] = found_title
-        return meta, normalize_wechat_code_blocks(content)
+        return meta, normalize_wechat_content(content)
 
     if suffix in {".md", ".markdown"}:
         meta, body = parse_frontmatter(text)
@@ -307,7 +367,7 @@ def load_article(path: Path) -> tuple[dict[str, Any], str]:
             heading = re.search(r"^#\s+(.+)$", body, re.M)
             if heading:
                 meta["title"] = heading.group(1).strip()
-        return meta, normalize_wechat_code_blocks(markdown_to_html(body))
+        return meta, normalize_wechat_content(markdown_to_html(body))
 
     raise WeChatError(f"Unsupported article file type: {suffix}")
 
@@ -605,6 +665,7 @@ def command_draft(args: argparse.Namespace) -> None:
         dry_run=args.dry_run,
         upload=not args.no_inline_image_upload,
     )
+    content = normalize_wechat_lists(content)
     thumb_media_id = args.thumb_media_id or metadata.get("thumb_media_id")
     if not thumb_media_id:
         if args.dry_run:
